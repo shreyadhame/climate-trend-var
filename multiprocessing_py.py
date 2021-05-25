@@ -21,7 +21,7 @@ def chunks(matrix):
     mat = np.array(matrix)
     matrix_re = np.reshape(mat,(mat.shape[0],mat.shape[1]*mat.shape[2]))
     matrix_chunks = matrix_re.T.tolist()
-
+    # matrix_chunks=np.stack(matrix_re.T, axis=0)
     return matrix_chunks
 
 def f_mp(f, iterable, ncores, a=0.10):

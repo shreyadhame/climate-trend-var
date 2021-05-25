@@ -101,12 +101,26 @@ def calc_z_score(s, var_s,a=0.10):
     h = abs(z) > norm.ppf(1-a/2)
     return z,p,h
 
+def calc_pfdr(p_matrix,a=0.01):
+    """
+    Calculate p_fdr
+    """
+    p_sort = np.sort(p_matrix.flatten()[~np.isnan(p_matrix.flatten())])
+    q = []
+    for i in range(len(p_sort)):
+        if p_sort[i] <= (i/len(p_sort))*a:
+            q.append(p_sort[i])
+        else:
+            pass
+    if q==[]:
+        return a
+    else:
+        return np.max(q)
+
 def mask_h(h_matrix,z_matrix,q):
     h_ma = ma.masked_where(h_matrix<1.,h_matrix)
     h_n=ma.masked_where(np.abs(z_matrix)<q,h_ma)
     return h_n
-
-
 
 def ensmean_significance_2(trend_data_all,seasons=True):
     if seasons == True:
@@ -263,17 +277,8 @@ def ensmean_significance(trend_data_all,seasons=True, n=4):
 
         S_n_split = [S_n]
         var_s_split = [var_s]
-    if n==5:
-        #average ensemble members
-        S_n_mean = []
-        for i in range(len(S_n_split)):
-                S_n_mean.append((S_n_split[i][0]+S_n_split[i][1]+S_n_split[i][2]+S_n_split[i][3]+ S_n_split[i][4])/5.)
 
-        #average ensemble members
-        var_s_mean = []
-        for i in range(len(var_s_split)):
-                var_s_mean.append((var_s_split[i][0]+var_s_split[i][1]+var_s_split[i][2]+var_s_split[i][3]+ var_s_split[i][4])/5.)
-    elif n==6:
+    if n==6:
         #average ensemble members
         S_n_mean = []
         for i in range(len(S_n_split)):
@@ -283,6 +288,26 @@ def ensmean_significance(trend_data_all,seasons=True, n=4):
         var_s_mean = []
         for i in range(len(var_s_split)):
                 var_s_mean.append((var_s_split[i][0]+var_s_split[i][1]+var_s_split[i][2]+var_s_split[i][3]+var_s_split[i][4]+var_s_split[i][5])/6.)
+
+    elif n==5:
+        #average ensemble members
+        S_n_mean = []
+        for i in range(len(S_n_split)):
+                S_n_mean.append((S_n_split[i][0]+S_n_split[i][1]+S_n_split[i][2]+S_n_split[i][3]+ S_n_split[i][4])/5.)
+
+        #average ensemble members
+        var_s_mean = []
+        for i in range(len(var_s_split)):
+                var_s_mean.append((var_s_split[i][0]+var_s_split[i][1]+var_s_split[i][2]+var_s_split[i][3]+ var_s_split[i][4])/5.)
+
+    elif n==3:
+        S_n_mean = []
+        for i in range(len(S_n_split)):
+            S_n_mean.append((S_n_split[i][0]+S_n_split[i][1]+S_n_split[i][2])/3.)
+
+        var_s_mean = []
+        for i in range(len(var_s_split)):
+            var_s_mean.append((var_s_split[i][0]+var_s_split[i][1]+var_s_split[i][2])/3.)
 
     elif n==2:
         S_n_mean = []
