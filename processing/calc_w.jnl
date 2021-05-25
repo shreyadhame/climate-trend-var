@@ -1,0 +1,5 @@
+use a10_MclmT_r06.mocn_1951-2016_var_r.nc
+let div = (-1.0)*(U[I=@ddc] + V[J=@ddc])
+let W = div[K=27:1@iin]
+set memory/size=500000
+save/file=a10_MclmT_r06.mocn_1951-2016_w.nc W
